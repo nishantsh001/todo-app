@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import './Todo.css';
-import { BrowserRouter, Route, Routes, useNavigate, useParams } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate, useParams, Link } from 'react-router-dom';
 
 export default function TodoApp() {
   return (
     <div className='TodoApp'>
+    <HeaderComponent/>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LoginComponent />} />
@@ -12,8 +13,10 @@ export default function TodoApp() {
           <Route path="/welcome/:username" element={<WelcomeComponent />} />
           <Route path="/todos" element={<ListTodosComponent />} />
           <Route path="*" element={<ErrorComponent />} />
+          <Route path="/logout" element={<LogoutComponent />} />
         </Routes>
       </BrowserRouter>
+      <FooterComponent/>
     </div>
   );
 }
@@ -104,7 +107,9 @@ function WelcomeComponent() {
   return (
     <div className='Welcome'>
       <h1>Welcome {username}</h1>
-      Welcome Component
+      <div>
+        Manage your todos - <Link to='/todos'>go here</Link>
+      </div>
     </div>
   );
 }
@@ -123,10 +128,13 @@ function ErrorComponent() {
 
 function ListTodosComponent() {
 
+  const today = new Date();
+  const targetDate = new Date(today.getFullYear() + 12, today.getMonth(), today.getDay());
+
   const todos = [
-    { id: 1, description: 'Learn AWS' },
-    { id: 2, description: 'Learn Full Stack' },
-    { id: 3, description: 'Learn Devops' },
+    { id: 1, description: 'Learn AWS', done: false, targetDate: targetDate },
+    { id: 2, description: 'Learn Full Stack', done: false, targetDate: targetDate },
+    { id: 3, description: 'Learn Devops', done: false, targetDate: targetDate },
   ]
 
   return (
@@ -136,8 +144,10 @@ function ListTodosComponent() {
         <table>
           <thead>
             <tr>
-              <td>id</td>
-              <td>description</td>
+              <td>ID</td>
+              <td>Description</td>
+              <td>Is Done?</td>
+              <td>Target Date</td>
             </tr>
           </thead>
           <tbody>
@@ -146,6 +156,8 @@ function ListTodosComponent() {
                 <tr key={todo.id}>
                   <td>{todo.id}</td>
                   <td>{todo.description}</td>
+                  <td>{todo.done.toString()}</td>
+                  <td>{todo.targetDate.toDateString()}</td>
                 </tr>
               )
               )
@@ -156,5 +168,30 @@ function ListTodosComponent() {
       </div>
     </div>
 
+  );
+}
+
+function HeaderComponent() {
+  return (
+    <div className='header'>
+        Header<hr/>
+    </div>
+  );
+}
+
+function FooterComponent() {
+  return (
+    <div className='footer'>
+        <hr/>Footer
+    </div>
+  );
+}
+
+function LogoutComponent() {
+  return (
+    <div className='LogoutComponent'>
+        <h1>You're logged out</h1>
+        <div>Thank you for using our services</div>
+    </div>
   );
 }
